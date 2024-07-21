@@ -16,12 +16,12 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return jsonify(error=No file part), 400
+        return jsonify(error='No file part'), 400
 
     file = request.files['file']
 
     if file.filename == '':
-        return jsonify(error=No selected file), 400
+        return jsonify(error='No selected file'), 400
 
     if file and allowed_file(file.filename):
         filepath = os.path.join('uploads', file.filename)
@@ -31,19 +31,20 @@ def upload_file():
         os.remove(filepath)  # Clean up the uploaded file after processing
         return jsonify(text=extracted_text)
 
-    return jsonify(error=File type not allowed), 400
+    return jsonify(error='File type not allowed'), 400
 
-def allowed_file(filename):
+ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'pdf'}
 
-def process_file(filepath):
-    _, file_extension = os.path.splitext(filepath)
-    text = 
 
-    if file_extension.lower() == .pdf:
+ def process_file(filepath):
+    _, file_extension = os.path.splitext(filepath)
+    text = ''
+
+    if file_extension.lower() == '.pdf':
         images = pdf2image.convert_from_path(filepath)
         for image in images:
-            text += pytesseract.image_to_string(image, lang='ara') + n
+            text += pytesseract.image_to_string(image, lang='ara') + '\n'
     else:
         image = Image.open(filepath)
         text = pytesseract.image_to_string(image, lang='ara')
@@ -52,4 +53,4 @@ def process_file(filepath):
 
 if __name__ == '__main__':
     os.makedirs('uploads', exist_ok=True)
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
