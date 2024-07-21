@@ -1,4 +1,1 @@
-Flask==2.0.1
-pytesseract==0.3.8
-pillow==8.2.0
-pdf2image==1.16.0
+Flask==2.0.1\npytesseract==0.3.8\npillow==8.2.0\npdf2image==1.16.0
