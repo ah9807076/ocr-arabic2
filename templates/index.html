@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arabic OCR</title>
+</head>
+<body>
+    <h1>Upload PDF or Image for Arabic OCR</h1>
+    <form ref=uploadForm id=uploadForm action=/ method=post enctype=multipart/form-data>
+        <input type=file name=file />
+        <input type=submit value=Upload />
+    </form>
+    <h2>Extracted Text</h2>
+    <pre id="extractedText"></pre>
+
+    <script>
+        document.getElementById(uploadForm).addEventListener(submit, function(e) {
+            e.preventDefault();
+            const form = new FormData(document.getElementById(uploadForm));
+            fetch(/upload, {
+                method: POST,
+                body: form
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById(extractedText).textContent = data.text;
+                }
+            })
+            .catch(error => console.error(Error:, error));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+Flask==2.0.1
+pytesseract==0.3.8
+pillow==8.2.0
+pdf2image==1.16.0
