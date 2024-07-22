@@ -3,6 +3,10 @@ import pytesseract
 from PIL import Image
 import pdf2image
 import os
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -16,26 +20,35 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
+        app.logger.error(No file part in request.)
         return jsonify(error='No file part'), 400
 
     file = request.files['file']
 
     if file.filename == '':
+        app.logger.error(No selected file.)
         return jsonify(error='No selected file'), 400
 
     if file and allowed_file(file.filename):
         filepath = os.path.join('uploads', file.filename)
         file.save(filepath)
 
-        extracted_text = process_file(filepath)
-        os.remove(filepath)  # Clean up the uploaded file after processing
-        return jsonify(text=extracted_text)
+        try {
+                extracted_text = process_file(filepath)
+            } except Exception as e {
+                app.logger.error(fError processing file: {e})
+                return jsonify(error='Error processing file'), 500
+            } finally {
+                os.remove(filepath)  # Clean up the uploaded file after processing
+            }
+            return jsonify(text=extracted_text)
 
-    return jsonify(error='File type not allowed'), 400
+        app.logger.error(File type not allowed.)
+        return jsonify(error='File type not allowed'), 400
+
 
  def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'pdf'}
-
 
  def process_file(filepath):
     _, file_extension = os.path.splitext(filepath)
@@ -53,4 +66,4 @@ def upload_file():
 
 if __name__ == '__main__':
     os.makedirs('uploads', exist_ok=True)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
