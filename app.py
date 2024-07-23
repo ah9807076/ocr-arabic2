@@ -10,11 +10,15 @@ logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
+# Log startup info
+app.logger.info('Starting Flask application')
+
 # Configure Tesseract to use Arabic language
 pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'  # Update this path to where Tesseract is installed
 
 @app.route('/')
 def index():
+    app.logger.info('Serving index page')
     return app.send_static_file('index.html')
 
 @app.route('/upload', methods=['POST'])
@@ -34,6 +38,7 @@ def upload_file():
         file.save(filepath)
 
         try:
+            app.logger.info(f'Processing file: {filepath}')
             extracted_text = process_file(filepath)
         except Exception as e:
             app.logger.error(f'Error processing file: {e}')
@@ -67,3 +72,5 @@ def process_file(filepath):
 if __name__ == '__main__':
     os.makedirs('uploads', exist_ok=True)
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+app.logger.info('Flask application has started and is listening on port 5000')
