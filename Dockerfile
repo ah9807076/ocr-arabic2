@@ -1,7 +1,1 @@
-FROM python:3.8-slim
-WORKDIR /app
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 5000
-CMD ["sh", "-c", "python app.py &> /app/logs.txt"]
+FROM python:3.8-slim\nWORKDIR /app\nCOPY requirements.txt requirements.txt\nRUN pip install -r requirements.txt\nCOPY . .\nEXPOSE 5000\nCMD ["sh", "-c", "echo 'Container Started' > /app/container_started_log.txt && python app.py &> /app/app_logs.txt"]
